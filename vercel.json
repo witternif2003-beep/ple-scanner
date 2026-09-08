@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/status",
+      "destination": "/api/status"
+    },
+    {
+      "source": "/api/universe",
+      "destination": "/api/universe"
+    },
+    {
+      "source": "/api/cron",
+      "destination": "/api/cron"
+    },
+    {
+      "source": "/api/results",
+      "destination": "/api/results"
+    }
+  ]
+}
