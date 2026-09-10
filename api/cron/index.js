@@ -56,7 +56,9 @@ function ev(bars) {
   const pullbackDepth = preHigh > 0 ? (preHigh - ledgeLow) / preHigh : 0;
   const priorMove = preHigh > 0 ? (preHigh - first) / first : 0;
   const avgVol = (from, to) => { let s = 0, c = 0; for (let j = Math.max(0, from); j < Math.min(n, to); j++) { if (V[j] > 0) { s += V[j]; c++; } } return c ? s / c : 0; };
-  const volRatio = avgVol(preIdx - 6, preIdx + 1) > 0 ? avgVol(extIdx, extIdx + 6) / avgVol(preIdx - 6, preIdx + 1) : 1;
+  const preVol = avgVol(preIdx - 6, preIdx + 1);
+  const postVol = avgVol(extIdx, extIdx + 6);
+  const volRatio = preVol > 0 ? postVol / preVol : 1;
   let score = 0;
   score += 25 * Math.max(0, Math.min(1, slopeTotal / 0.015));
   score += 25 * Math.max(0, Math.min(1, (closePos - 0.40) / 0.60));
@@ -73,28 +75,26 @@ module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
   try {
-    const redis = Redis.fromEnv();
+    const redis = Redis.fromEnv({ enableAutoPipelining: false });
     let idx = Number(await redis.get('ple:batch_idx') || 0);
-    const total = Math.ceil(U.length / B);
-    const start = (idx % total) * B;
+    const totalBatches = Math.ceil(U.length / B);
+    const start = (idx % totalBatches) * B;
     const batch = U.slice(start, start + B);
     const matches = [];
-    for (const t of batch) {
-      try {
-        const bars = await fb(t);
-        const r = ev(bars);
-        if (r.match) {
-          const score = Math.min(100, Math.round(r.confidence * 0.6 + Math.abs(r.totalMove) * 1000));
-          await redis.zadd('ple:queue', { score, member: t });
-          await redis.hset(`ple:meta:${t}`, {
-            ticker: t, score: String(score), confidence: String(r.confidence),
-            total_move: String(r.totalMove), timestamp: String(Date.now())
-          });
-          await redis.expire('ple:queue', 7200);
-          await redis.expire(`ple:meta:${t}`, 7200);
-          matches.push(t);
-        }
-      } catch {}
+    for (const ticker of batch) {
+      const bars = await fb(ticker);
+      const r = ev(bars);
+      if (r.match) {
+        const sc = Math.min(100, Math.round(r.confidence * 0.6 + Math.abs(r.totalMove) * 1000));
+        await redis.zadd('ple:queue', { score: sc, member: ticker });
+        await redis.hset(`ple:meta:${ticker}`, {
+          ticker, score: String(sc), confidence: String(r.confidence),
+          total_move: String(r.totalMove), timestamp: String(Date.now())
+        });
+        await redis.expire('ple:queue', 7200);
+        await redis.expire(`ple:meta:${ticker}`, 7200);
+        matches.push(ticker);
+      }
     }
     await redis.incr('ple:api_calls');
     await redis.incrby('ple:matches_today', matches.length);
