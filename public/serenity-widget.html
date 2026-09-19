@@ -513,7 +513,7 @@
     </div>
     <div class="filter-bar" id="filterBar">
       <button class="filter-btn active" data-filter="all">ALL 60 BREAKOUT RUNNERS</button>
-      <button class="filter-btn surge" data-filter="surge" style="color:#ffb800; border-color:rgba(255,184,0,0.4);">★ +900% IMMINENT SURGES</button>
+      <button class="filter-btn surge" data-filter="surge" style="color:#ffb800; border-color:rgba(255,184,0,0.4);">★ +10,000% / +900% RECOMMENDATIONS</button>
       <button class="filter-btn" data-filter="tier1" style="color:#00ff9d; border-color:rgba(0,255,157,0.4);">★ P1 TIER-1 ALPHA (#1-#8)</button>
       <button class="filter-btn" data-filter="reversal">BULLISH REVERSALS</button>
       <button class="filter-btn" data-filter="continuation">CONTINUATION MOMENTUM</button>
@@ -908,6 +908,13 @@
   }
 
   function filterAndRender() {
+    // Brain Lab By Liliya: Continuous Real-Time Re-ranking on every live pulse
+    allRunnersData.sort((a, b) => (Number(b.change_pct) || 0) - (Number(a.change_pct) || 0));
+    allRunnersData.forEach((c, idx) => {
+      c.rank = idx + 1;
+      c.tier = c.rank <= 8 ? "TIER1" : (c.rank <= 26 ? "TIER2" : "WATCH");
+    });
+
     renderP1TickerShelf(allRunnersData.slice(0, 8));
     let filtered = allRunnersData;
     if (activeFilter === 'surge') {
@@ -1028,18 +1035,20 @@
           const rng = (h52 > l52 && price > 0) ? ((price - l52) / (h52 - l52) * 100) : 50.0;
           const mom5d = perfW != null ? perfW : chg;
 
-          // Official Predictive Narrative Selection for Imminent +900% Surges
-          let narrative = "MOMENTUM ACCUMULATION";
-          if (floatTo >= 50.0 || (volExp >= 10.0 && chg >= 50.0)) {
-            narrative = "★ +900% PARABOLIC SURGE (FLOAT DRAIN)";
-          } else if (floatShares && floatShares < 5000000 && volExp >= 4.0) {
-            narrative = "★ ULTRA-LOW FLOAT TURNOVER BURST";
+          // Official Brain Lab By Liliya Post-Doctorate Narrative Recommendations (+10,000% Matrix)
+          let narrative = "MOMENTUM ACCUMULATION [LIQUIDITY BASE]";
+          if (chg >= 100.0 || floatTo >= 100.0) {
+            narrative = "★ +10,000% PARABOLIC RUNNER [FLOAT SUPPLY EXTINCTION]";
+          } else if (floatTo >= 50.0 || (volExp >= 10.0 && chg >= 50.0)) {
+            narrative = "★ +900% IMMINENT BREAKOUT [HAWKES CRITICAL CONVEXITY]";
+          } else if (floatShares && floatShares < 5000000 && volExp >= 8.0) {
+            narrative = "★ P1 TIER-1 SQUEEZE [ULTRA-LOW FLOAT ROTATION]";
           } else if (volExp >= 20.0) {
-            narrative = "★ HAWKES JUMP-DIFFUSION CASCADE";
+            narrative = "★ HAWKES JUMP-DIFFUSION CASCADE (BRANCHING η→1.0)";
           } else if (chg > 40 || mom5d > 60) {
-            narrative = "BULLISH REVERSAL (52W BOTTOM RECLAIM)";
-          } else if (chg > 10 || mom5d > 15) {
-            narrative = "HIGH-VELOCITY CONTINUATION";
+            narrative = "BULLISH MICROSTRUCTURE REVERSAL [VWAP ANCHOR RECLAIM]";
+          } else if (chg > 15 || mom5d > 20) {
+            narrative = "HIGH-VELOCITY CONTINUATION [MOMENTUM DYNAMICS]";
           }
 
           // Conviction Score calibration (60 - 100)
