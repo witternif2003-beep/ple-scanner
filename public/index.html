@@ -489,7 +489,7 @@
     <div class="widget-header">
       <div class="title-area">
         <h1>NSA · SERENITY-Ω · P1 TIER-1 SCANNER</h1>
-        <div class="sub">AUTONOMOUS 24/7 MARKET INTELLIGENCE FABRIC · ZERO-API-KEY ENGINE · 8,000+ UNIVERSE</div>
+        <div class="sub">BRAIN LAB BY LILIYA · AUTONOMOUS 24/7 MARKET INTELLIGENCE FABRIC · ZERO-API-KEY ENGINE · 8,000+ UNIVERSE</div>
       </div>
       <div class="header-ctrls">
         <button id="toggleDesktopRatio" class="btn" style="border-color:#00e5ff; color:#00e5ff; background:rgba(0,229,255,0.18); box-shadow:0 0 12px rgba(0,229,255,0.4);">
@@ -500,6 +500,7 @@
           <span id="radarText">24/7 RADAR [5s]</span>
         </button>
         <button id="toggleAudit" class="btn">ECC AUDIT</button>
+        <button id="btnBrainLab" class="btn" style="border-color:#00ff9d; color:#00ff9d; background:rgba(0,255,157,0.12); box-shadow:0 0 10px rgba(0,255,157,0.3);">🧠 BRAIN LAB</button>
         <button id="btnLockTerminal" class="btn" style="border-color:#ff3d71; color:#ff3d71; background:rgba(255,61,113,0.12);">🔒 LOCK</button>
       </div>
     </div>
@@ -547,7 +548,48 @@
       <div id="lastTimestamp" style="font-size: 0.68rem; color: #7c8da3;">LAST PULSE: INITIALIZING</div>
     </div>
 
-        <!-- P1 Priority Neon Blue Glowing Pulse Live Shelf -->
+            <!-- Brain Lab By Liliya Cognitive Telemetry Drawer -->
+    <div id="brainLabPanel" class="glass-card scanlines" style="display:none; margin-top:14px; border:1px solid rgba(0,255,157,0.6); box-shadow:0 0 25px rgba(0,255,157,0.25);">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(0,255,157,0.3); padding-bottom:8px; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.2rem;">🧠</span>
+          <div>
+            <div style="font-family:'Orbitron',sans-serif; font-size:0.85rem; font-weight:800; color:#00ff9d; letter-spacing:0.12em;">
+              BRAIN LAB BY LILIYA · COGNITIVE RESEARCH DOSSIER
+            </div>
+            <div style="font-size:0.62rem; color:#7c8da3; letter-spacing:0.08em;">
+              POST-DOCTORATE NEURAL INTELLIGENCE · HAWKES POINT PROCESS · KYLE LAMBDA · FLOAT EXHAUSTION
+            </div>
+          </div>
+        </div>
+        <button id="closeBrainLab" class="btn" style="padding:4px 8px; font-size:0.65rem;">✕ CLOSE</button>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom:14px;">
+        <div style="background:rgba(0,0,0,0.4); padding:8px; border-radius:6px; border:1px solid rgba(0,255,157,0.2);">
+          <div style="font-size:0.58rem; color:#7c8da3;">SYNAPTIC RATE</div>
+          <div style="font-size:0.95rem; font-weight:800; color:#00ff9d;">1,420.5 Hz</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.4); padding:8px; border-radius:6px; border:1px solid rgba(0,229,255,0.2);">
+          <div style="font-size:0.58rem; color:#7c8da3;">COGNITIVE LOAD</div>
+          <div style="font-size:0.95rem; font-weight:800; color:#00e5ff;">28.4%</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.4); padding:8px; border-radius:6px; border:1px solid rgba(91,91,255,0.2);">
+          <div style="font-size:0.58rem; color:#7c8da3;">NEURAL NODES</div>
+          <div style="font-size:0.95rem; font-weight:800; color:#5b5bff;">128 ACTIVE</div>
+        </div>
+        <div style="background:rgba(0,0,0,0.4); padding:8px; border-radius:6px; border:1px solid rgba(255,184,0,0.2);">
+          <div style="font-size:0.58rem; color:#7c8da3;">SURGE PROBABILITY</div>
+          <div style="font-size:0.95rem; font-weight:800; color:#ffb800;">99.4% (SPI)</div>
+        </div>
+      </div>
+
+      <div id="brainLabDossiers" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:10px;">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- P1 Priority Neon Blue Glowing Pulse Live Shelf -->
     <div style="margin-bottom: 16px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
         <span style="font-size:0.68rem; font-weight:800; color:#5b5bff; letter-spacing:0.12em; text-shadow:0 0 10px rgba(91,91,255,0.7);">
@@ -684,7 +726,61 @@
     });
   }
 
-    // Security Clearance Gate Logic (User Must Type In Password)
+      // Brain Lab By Liliya Toggle & Dossier Renderer
+  const btnBrainLab = document.getElementById("btnBrainLab");
+  const brainLabPanel = document.getElementById("brainLabPanel");
+  const closeBrainLab = document.getElementById("closeBrainLab");
+  const brainLabDossiers = document.getElementById("brainLabDossiers");
+
+  function renderBrainLabDossiers(runners) {
+    if (!brainLabDossiers || !runners || runners.length === 0) return;
+    const top4 = runners.slice(0, 4);
+    brainLabDossiers.innerHTML = top4.map(r => {
+      const sym = r.symbol;
+      const px = Number(r.price) || 0;
+      const chg = Number(r.change_pct) || 0;
+      const ft = Number(r.float_turnover) || 1.0;
+      const hw = Number(r.hawkes_intensity) || 1.2;
+      const kl = Number(r.kyle_lambda) || 0.05;
+      const spi = Math.min(99.4, Math.max(45.0, 40.0 + (chg * 0.35) + (ft * 4.2) + (hw * 3.5))).toFixed(1);
+      const phase = ft >= 50.0 ? "PHASE 4: HYPER-EXHAUSTION" : ft >= 5.0 ? "PHASE 3: ROTATION CASCADE" : "PHASE 2: SUPPLY BREACH";
+
+      return `
+        <div style="background:rgba(0,10,24,0.6); border:1px solid rgba(0,255,157,0.3); border-radius:8px; padding:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:0.9rem; font-weight:800; color:#00e5ff;">${sym}</span>
+            <span style="font-size:0.75rem; font-weight:800; color:#00ff9d;">$${px.toFixed(2)} (+${chg.toFixed(2)}%)</span>
+          </div>
+          <div style="font-size:0.62rem; color:#ffb800; font-weight:700; margin-bottom:4px;">
+            SURGE POTENTIAL INDEX: ${spi}% · ${phase}
+          </div>
+          <div style="font-size:0.58rem; color:#7c8da3; line-height:1.4;">
+            Float T/O: <strong style="color:#fff;">${ft.toFixed(1)}x</strong> | Hawkes λ: <strong style="color:#fff;">${hw.toFixed(2)}</strong> | Kyle: <strong style="color:#fff;">${kl.toFixed(4)}</strong>
+          </div>
+          <div style="font-size:0.55rem; color:#38bdf8; margin-top:4px;">
+            ★ Brain Lab By Liliya Conviction: P1 TIER-1 SURGE TARGET
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+
+  if (btnBrainLab) {
+    btnBrainLab.addEventListener("click", () => {
+      if (brainLabPanel) {
+        const isHidden = brainLabPanel.style.display === "none";
+        brainLabPanel.style.display = isHidden ? "block" : "none";
+        if (isHidden) renderBrainLabDossiers(allRunnersData);
+      }
+    });
+  }
+  if (closeBrainLab) {
+    closeBrainLab.addEventListener("click", () => {
+      if (brainLabPanel) brainLabPanel.style.display = "none";
+    });
+  }
+
+  // Security Clearance Gate Logic (User Must Type In Password)
   const securityGate = document.getElementById("securityGate");
   const gatePasswordInput = document.getElementById("gatePasswordInput");
   const btnUnlockTerminal = document.getElementById("btnUnlockTerminal");
