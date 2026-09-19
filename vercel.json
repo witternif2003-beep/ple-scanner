@@ -1,5 +1,19 @@
 {
+  "crons": [
+    {
+      "path": "/api/cron",
+      "schedule": "0 */1 * * *"
+    }
+  ],
   "rewrites": [
+    {
+      "source": "/api/universe-scan",
+      "destination": "/api/universe-scan"
+    },
+    {
+      "source": "/api/login",
+      "destination": "/api/login"
+    },
     {
       "source": "/api/status",
       "destination": "/api/status"
@@ -15,9 +29,14 @@
     {
       "source": "/api/results",
       "destination": "/api/results"
+    },
+    {
+      "source": "/serenity-widget.html",
+      "destination": "/serenity-widget.html"
+    },
+    {
+      "source": "/",
+      "destination": "/index.html"
     }
   ]
-}
-{
-  "crons": [{"path": "/api/cron", "schedule": "0 */1 * * *"}]
 }
